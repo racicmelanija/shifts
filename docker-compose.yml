@@ -7,6 +7,8 @@ services:
     restart: on-failure
     ports:
       - "8000:8000"
+    networks:
+      - postgres
 
   postgres:
     image: postgres
@@ -34,6 +36,20 @@ services:
     ports:
       - "5050:80"
     networks: 
+      - postgres
+    restart: unless-stopped
+
+  etl:
+    build:
+      context: etl/.
+      dockerfile: Dockerfile
+    container_name: etl
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - shifts_api
+    networks:
       - postgres
     restart: unless-stopped
 
