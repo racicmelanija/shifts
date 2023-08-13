@@ -6,7 +6,7 @@ $ docker-compose up -d
 When everything is up and running, start the etl job here: http://localhost:8080/start-etl-job
 
 ### Extract
-Data is extracted using RestTemplate in [`ShiftsApiClient`](https://github.com/racicmelanija/shifts/blob/master/etl/src/main/java/com/example/etl/client/ShiftsApiClient.java). Since the api is paginated, data is fetched until this condition is fulfilled: 
+Data is extracted using RestTemplate in [`ShiftsApiClient`](https://github.com/racicmelanija/shifts/blob/master/etl/src/main/java/com/example/etl/client/ShiftsApiClient.java). Since the api is paginated, data is fetched until this condition is not fulfilled anymore: 
 ```
 public boolean hasNextPage() {  
     return links.getNext() != null;  
