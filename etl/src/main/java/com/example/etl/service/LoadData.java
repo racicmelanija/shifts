@@ -1,6 +1,6 @@
 package com.example.etl.service;
 
-import com.example.etl.ShiftRepository;
+import com.example.etl.repository.ShiftRepository;
 import com.example.etl.model.Shift;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class LoadData {
     private final ShiftRepository shiftRepository;
     private final EntityManager entityManager;
 
-    @Transactional()
+    @Transactional
     public void execute(List<Shift> shifts) {
         int batchSize = 50;
 

@@ -13,7 +13,6 @@ public class EtlJobController {
 
     @GetMapping("/start-etl-job")
     public void startEtlJob() {
-        System.out.println("Starting etl job...");
         startEtlJob.execute();
     }
 

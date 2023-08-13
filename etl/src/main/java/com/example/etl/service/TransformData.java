@@ -12,51 +12,47 @@ import com.example.etl.model.Shift;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static com.example.etl.util.TransformationUtil.transformList;
 
 @Service
 public class TransformData {
 
-    public List<Shift> execute(ShiftsApiResponse response) {
-        System.out.println(response.getResults().get(0).getId());
+    public List<Shift> execute(final ShiftsApiResponse response) {
         return response.getResults().stream()
                 .map(this::toShift)
                 .toList();
     }
 
-    private Shift toShift(ShiftResponse shiftResponse) {
-        Shift shift = Shift.builder()
+    private Shift toShift(final ShiftResponse shiftResponse) {
+        final Shift shift = Shift.builder()
                 .id(shiftResponse.getId())
                 .date(shiftResponse.getDate())
                 .start(toDate(shiftResponse.getStart()))
                 .finish(toDate(shiftResponse.getFinish()))
                 .build();
 
-        shift.setBreaks(toBreaks(shiftResponse.getBreaks(), shift));
-        shift.setAllowances(toAllowances(shiftResponse.getAllowances(), shift));
-        shift.setAwardInterpretations(toAwardInterpretations(shiftResponse.getAwardInterpretations(), shift));
+        shift.setBreaks(
+                transformList(shiftResponse.getBreaks(), breakResponse -> toBreak(breakResponse, shift))
+        );
+        shift.setAllowances(
+                transformList(shiftResponse.getAllowances(), allowanceResponse -> toAllowance(allowanceResponse, shift))
+        );
+        shift.setAwardInterpretations(
+                transformList(shiftResponse.getAwardInterpretations(), awardInterpretationResponse -> toAwardInterpretation(awardInterpretationResponse, shift))
+        );
         shift.setCost(calculateShiftCost(shift));
         
         return shift;
     }
 
-    private Date toDate(long milliseconds) {
+    private Date toDate(final long milliseconds) {
         return Date.from(Instant.ofEpochMilli(milliseconds));
     }
 
-    private List<Break> toBreaks(List<BreakResponse> breaksResponse, Shift shift) {
-        if (breaksResponse == null) {
-            return Collections.emptyList();
-        }
-
-        return breaksResponse.stream()
-                .map(breakResponse -> toBreak(breakResponse, shift))
-                .toList();
-    }
-
-    private Break toBreak(BreakResponse breakResponse, Shift shift) {
+    private Break toBreak(final BreakResponse breakResponse, final Shift shift) {
         return Break.builder()
                 .id(breakResponse.getId())
                 .start(toDate(breakResponse.getStart()))
@@ -66,17 +62,7 @@ public class TransformData {
                 .build();
     }
 
-    private List<Allowance> toAllowances(List<AllowanceResponse> allowancesResponse, Shift shift) {
-        if (allowancesResponse == null) {
-            return Collections.emptyList();
-        }
-
-        return allowancesResponse.stream()
-                .map(allowanceResponse -> toAllowance(allowanceResponse, shift))
-                .toList();
-    }
-
-    private Allowance toAllowance(AllowanceResponse allowanceResponse, Shift shift) {
+    private Allowance toAllowance(final AllowanceResponse allowanceResponse, final Shift shift) {
         return Allowance.builder()
                 .id(allowanceResponse.getId())
                 .value(allowanceResponse.getValue())
@@ -85,17 +71,7 @@ public class TransformData {
                 .build();
     }
 
-    private List<AwardInterpretation> toAwardInterpretations(List<AwardInterpretationResponse> awardInterpretationsResponse, Shift shift) {
-        if (awardInterpretationsResponse == null) {
-            return Collections.emptyList();
-        }
-
-        return awardInterpretationsResponse.stream()
-                .map(awardInterpretationResponse -> toAwardInterpretation(awardInterpretationResponse, shift))
-                .toList();
-    }
-
-    private AwardInterpretation toAwardInterpretation(AwardInterpretationResponse awardInterpretationResponse, Shift shift) {
+    private AwardInterpretation toAwardInterpretation(final AwardInterpretationResponse awardInterpretationResponse, final Shift shift) {
         return AwardInterpretation.builder()
                 .id(awardInterpretationResponse.getId())
                 .date(awardInterpretationResponse.getDate())
@@ -105,7 +81,7 @@ public class TransformData {
                 .build();
     }
 
-    private double calculateShiftCost(Shift shift) {
+    private double calculateShiftCost(final Shift shift) {
         final double allowancesCost = shift.getAllowances().stream()
                 .mapToDouble(Allowance::getCost)
                 .sum();

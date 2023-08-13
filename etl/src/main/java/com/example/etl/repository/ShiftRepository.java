@@ -1,4 +1,4 @@
-package com.example.etl;
+package com.example.etl.repository;
 
 import com.example.etl.model.Shift;
 import org.springframework.data.jpa.repository.JpaRepository;

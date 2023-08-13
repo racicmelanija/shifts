@@ -27,10 +27,13 @@ public class ShiftsApiClient {
     private List<Shift> fetchData(int start, List<Shift> data) {
         ResponseEntity<ShiftsApiResponse> response = sendGetRequest(start);
         ShiftsApiResponse shiftsApiResponse = response.getBody();
+        if (shiftsApiResponse == null) {
+            throw new RuntimeException();
+        }
 
         data.addAll(transformData.execute(shiftsApiResponse));
 
-        if (shiftsApiResponse != null && shiftsApiResponse.hasNextPage()) {
+        if (shiftsApiResponse.hasNextPage()) {
             fetchData(start + LIMIT, data);
         }
 

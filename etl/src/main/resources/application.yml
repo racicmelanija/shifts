@@ -1,14 +1,6 @@
 server:
   address: 0.0.0.0
 
-logging:
-  level:
-    org:
-      springframework:
-        web:
-          client:
-            RestTemplate: DEBUG
-
 spring:
   datasource:
     url: jdbc:postgresql://postgres:5432/postgres
@@ -23,7 +15,6 @@ spring:
           batch_size: 50
         order_inserts: true
         default_schema: public
-        show_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 resilience4j:
