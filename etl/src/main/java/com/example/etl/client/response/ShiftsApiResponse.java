@@ -9,8 +9,8 @@ import java.util.List;
 @ToString
 public class ShiftsApiResponse {
 
-    private List<Shift> results;
-    private NavigationLinks links;
+    private List<ShiftResponse> results;
+    private NavigationLinksResponse links;
     private int start;
     private int limit;
     private int size;

@@ -1,6 +1,14 @@
 server:
   address: 0.0.0.0
 
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          client:
+            RestTemplate: DEBUG
+
 spring:
   datasource:
     url: jdbc:postgresql://postgres:5432/postgres
@@ -10,6 +18,10 @@ spring:
   jpa:
     properties:
       hibernate:
+        generate_statistics: true
+        jdbc:
+          batch_size: 50
+        order_inserts: true
         default_schema: public
         show_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -18,8 +30,12 @@ resilience4j:
   retry:
     instances:
       shiftsApiClientRetryPolicy:
-        maxRetryAttempts: 3
+        maxAttempts: 3
         waitDuration: 2s
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2
+        retryExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
         resultPredicate: com.example.etl.predicate.ConditionalRetryPredicate

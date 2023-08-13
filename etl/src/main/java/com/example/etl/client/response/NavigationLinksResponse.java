@@ -5,7 +5,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class NavigationLinks {
+public class NavigationLinksResponse {
 
     private String base;
     private String prev;

@@ -1,6 +1,8 @@
 package com.example.etl.client;
 
 import com.example.etl.client.response.ShiftsApiResponse;
+import com.example.etl.model.Shift;
+import com.example.etl.service.TransformData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,16 +17,18 @@ import java.util.List;
 public class ShiftsApiClient {
 
     private final RestTemplate restTemplate;
+    private final TransformData transformData;
     private static final int LIMIT = 30;
 
-    public List<ShiftsApiResponse> fetchAllData() {
+    public List<Shift> fetchAllData() {
         return fetchData(0, new ArrayList<>());
     }
 
-    private List<ShiftsApiResponse> fetchData(int start, List<ShiftsApiResponse> data) {
+    private List<Shift> fetchData(int start, List<Shift> data) {
         ResponseEntity<ShiftsApiResponse> response = sendGetRequest(start);
         ShiftsApiResponse shiftsApiResponse = response.getBody();
-        data.add(shiftsApiResponse);
+
+        data.addAll(transformData.execute(shiftsApiResponse));
 
         if (shiftsApiResponse != null && shiftsApiResponse.hasNextPage()) {
             fetchData(start + LIMIT, data);

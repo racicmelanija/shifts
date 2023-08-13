@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Getter
 @ToString
-public class Break {
+public class BreakResponse {
 
     private UUID id;
     private long start;
