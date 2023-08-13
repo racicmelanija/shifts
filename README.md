@@ -1,5 +1,7 @@
 # Shifts ETL
 
+-> [Solution README file](https://github.com/racicmelanija/shifts/blob/master/etl/README.md) <-
+
 Work shifts for the past year are exposed through paginated REST API. Your
 task is to consume data from endpoint, perform specified transformations and
 store results into specified database (i.e. create an ETL job).
