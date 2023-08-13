@@ -31,7 +31,7 @@ Example for the `max_allowance_cost_14d` kpi:
 INSERT INTO kpis (kpi_name, kpi_date, kpi_value)  
 SELECT 'max_allowance_cost_14d', CURRENT_TIMESTAMP, MAX(public.allowances.cost)  
 FROM allowances
-WHERE shift_id IN (SELECT id 
-			       FROM shifts  
-			       WHERE date >= CURRENT_DATE - INTERVAL '14 days' AND date <= CURRENT_DATE);
+WHERE shift_id IN (SELECT id
+		   FROM shifts  
+		   WHERE date >= CURRENT_DATE - INTERVAL '14 days' AND date <= CURRENT_DATE);
 ````
